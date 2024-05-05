@@ -5,7 +5,6 @@ entity pong_top_st is
         clk, reset: in std_logic;
         btn: in std_logic_vector(4 downto 0);
         hsync, vsync: out std_logic;
-        -- rgb_8bit: out std_logic_vector(23 downto 0);
         rgb_top: out std_logic_vector(2 downto 0);
         vga_pixel_tick: out std_logic;
         blank: out std_logic;
