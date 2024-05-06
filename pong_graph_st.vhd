@@ -9,6 +9,7 @@ entity pong_graph_st is
         video_on: in std_logic;
         pixel_x, pixel_y: in std_logic_vector(9 downto 0);
         hit_cnt: out std_logic_vector(2 downto 0);
+        life_cnt: out std_logic_vector(1 downto 0);
         graph_rgb: out std_logic_vector(2 downto 0)
     ); 
 end pong_graph_st;
@@ -19,6 +20,7 @@ architecture sq_ball_arch of pong_graph_st is
     signal refr_tick: std_logic;
     
     signal hit_cnt_reg, hit_cnt_next: unsigned (2 downto 0);
+    signal life_cnt_reg, life_cnt_next: unsigned (1 downto 0);
     -- x, y coordinates (0,0) to (639, 479)
     signal pix_x, pix_y: unsigned(9 downto 0);
 
@@ -260,6 +262,7 @@ architecture sq_ball_arch of pong_graph_st is
     -- object output signals 
     signal wall_on, sq_ball1_on,sq_ball2_on, sq_ball3_on, rd_ball1_on, rd_ball2_on, rd_ball3_on, sq_spaceship_on, spaceship_on, sq_firing_ball_1_on, firing_ball_1_on, sq_firing_ball_2_on, firing_ball_2_on, sq_firing_ball_3_on, firing_ball_3_on: std_logic;
     signal wall_rgb, ball_rgb, spaceship_rgb, firing_ball_rgb: std_logic_vector(2 downto 0);
+    signal hit_logic_1, hit_logic_2, hit_logic_3: boolean;
 
     --==============================================================================================================================================================================
 
@@ -307,6 +310,7 @@ begin
             y_fb_3_delta_reg <= (others => '0');
 
             hit_cnt_reg <= (others => '0');
+            life_cnt_reg <= ("11");
 
         elsif (clk'event and clk = '1') then
             spaceship_y_reg <= spaceship_y_next;
@@ -349,6 +353,7 @@ begin
             y_fb_3_delta_reg <= y_fb_3_delta_next;
 
             hit_cnt_reg <= hit_cnt_next;
+            life_cnt_reg <= life_cnt_next;
         end if;
     end process;
 
@@ -591,28 +596,28 @@ begin
 
     -- process(hit_cnt_reg, spaceship_x_l, spaceship_y_t, spaceship_y_b, BALL_V_P, BALL_V_N, ball1_x_r, ball2_x_r, ball3_x_r, ball1_y_t, ball2_y_t, ball3_y_t, )
 
-    hit_cnt_next <= hit_cnt_reg+1 when ((spaceship_x_l < ball1_x_r)
-                            and (ball1_x_r < spaceship_x_l + BALL_V_P)
-                            and (x1_delta_reg = BALL_V_N)
-                            and (spaceship_y_t < ball1_y_b)
-                            and (ball1_y_t < spaceship_y_b)
-                            and refr_tick = '1')
-                            or 
-                            ((spaceship_x_l < ball2_x_r)
-                            and (ball2_x_r < spaceship_x_l + BALL_V_P)
-                            and (x2_delta_reg = BALL_V_N)
-                            and (spaceship_y_t < ball2_y_b)
-                            and (ball2_y_t < spaceship_y_b)
-                            and refr_tick = '1')
-                            or 
-                            ((spaceship_x_l < ball3_x_r)
-                            and (ball3_x_r < spaceship_x_l + BALL_V_P)
-                            and (x3_delta_reg = BALL_V_N)
-                            and (spaceship_y_t < ball3_y_b)
-                            and (ball3_y_t < spaceship_y_b)
-                            and refr_tick = '1') 
-                            else 
-                            hit_cnt_reg;
+    hit_logic_1 <= ((spaceship_x_l < ball1_x_r)
+                    and (ball1_x_r < spaceship_x_l + BALL_V_P)
+                    and (x1_delta_reg = BALL_V_N)
+                    and (spaceship_y_t < ball1_y_b)
+                    and (ball1_y_t < spaceship_y_b)
+                    and refr_tick = '1');
+    hit_logic_2 <= ((spaceship_x_l < ball2_x_r)
+                    and (ball2_x_r < spaceship_x_l + BALL_V_P)
+                    and (x2_delta_reg = BALL_V_N)
+                    and (spaceship_y_t < ball2_y_b)
+                    and (ball2_y_t < spaceship_y_b)
+                    and refr_tick = '1');
+    hit_logic_3 <= ((spaceship_x_l < ball3_x_r)
+                    and (ball3_x_r < spaceship_x_l + BALL_V_P)
+                    and (x3_delta_reg = BALL_V_N)
+                    and (spaceship_y_t < ball3_y_b)
+                    and (ball3_y_t < spaceship_y_b)
+                    and refr_tick = '1');
+                    
+    hit_cnt_next <= hit_cnt_reg+1 when (hit_logic_1 or hit_logic_2 or hit_logic_3) else hit_cnt_reg;
+                    
+    life_cnt_next <= (life_cnt_reg - 1) when (hit_cnt_reg = "111") and (hit_logic_1 or hit_logic_2 or hit_logic_3) else life_cnt_reg;
     
     --Process block that implements launching and movement of firing_ball
     --- You can use btn(4) if you already have used 4 btns
@@ -685,6 +690,7 @@ begin
     end process;
     
     hit_cnt <= std_logic_vector(hit_cnt_reg);
+    life_cnt <= std_logic_vector(life_cnt_reg);
 end sq_ball_arch;
 
    

@@ -16,10 +16,11 @@ architecture arch of pong_top_st is
     signal pixel_x, pixel_y: std_logic_vector(9 downto 0);
     signal video_on: std_logic;
     signal rgb_reg, rgb_next: std_logic_vector(2 downto 0);
-    signal rgb, pong_graph_rgb, hit_cnter_rgb: std_logic_vector(2 downto 0);
+    signal rgb, pong_graph_rgb, cnter_rgb: std_logic_vector(2 downto 0);
     signal p_tick: std_logic;
     signal hit_cnt: std_logic_vector(2 downto 0);
-    signal sq_hit_cnter_on: std_logic;
+    signal life_cnt: std_logic_vector (1 downto 0);
+    signal sq_hit_cnter_on, sq_life_cnter_on: std_logic;
 begin
     -- instantiate VGA sync
     vga_sync_unit: entity work.vga_sync
@@ -29,12 +30,13 @@ begin
         port map(clk=>clk, reset=>reset, btn=>btn,
         video_on=>video_on, pixel_x=>pixel_x,
         pixel_y=>pixel_y, hit_cnt=>hit_cnt,
+        life_cnt => life_cnt, 
         graph_rgb=>pong_graph_rgb);
     
     -- instantiate pixel generation circuit for counter_disp
     counter_disp_unit: entity work.counter_disp
         port map(pixel_x=>pixel_x, pixel_y=>pixel_y,
-        hit_cnt=>hit_cnt, sq_hit_cnter_on_output=> sq_hit_cnter_on, graph_rgb=>hit_cnter_rgb);
+        hit_cnt=>hit_cnt, life_cnt => life_cnt, sq_hit_cnter_on_output=> sq_hit_cnter_on, sq_life_cnter_on_output => sq_life_cnter_on, graph_rgb=>cnter_rgb);
     -- Set the high order bits of the video DAC for each
     -- of the three colors
     -- rgb_8bit(7) <= rgb(0);
@@ -56,6 +58,6 @@ begin
     blank <= video_on;
     -- when the current pixel is located within the “sq_hit_cnter�? area, -- assign ‘hit_cnter_rgb’ to final ‘rgb’, otherwise assign
     --- ‘pong_graph_rgb’ to the final “rgb�?;
-    rgb_next <= hit_cnter_rgb when sq_hit_cnter_on = '1' else
+    rgb_next <= cnter_rgb when (sq_hit_cnter_on = '1' or sq_life_cnter_on = '1') else
         pong_graph_rgb;
 end arch;
