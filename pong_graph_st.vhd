@@ -615,7 +615,7 @@ begin
                     and (ball3_y_t < spaceship_y_b)
                     and refr_tick = '1');
                     
-    hit_cnt_next <= hit_cnt_reg+1 when (hit_logic_1 or hit_logic_2 or hit_logic_3) else hit_cnt_reg;
+    hit_cnt_next <= hit_cnt_reg+1 when (hit_logic_1 or hit_logic_2 or hit_logic_3) and (life_cnt_reg > "00") else hit_cnt_reg;
                     
     life_cnt_next <= (life_cnt_reg - 1) when (hit_cnt_reg = "111") and (hit_logic_1 or hit_logic_2 or hit_logic_3) else life_cnt_reg;
     
