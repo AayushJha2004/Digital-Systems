@@ -290,7 +290,7 @@ architecture arch of pong_game_over is
     constant U_Y_T: integer := (MAX_Y/2) - (CHAR_SIZE/2) - 50;
     constant U_Y_B: integer:= U_Y_T + CHAR_SIZE - 1;
 
-    constant D_1_X_L: integer := (MAX_X/2) - (4*(CHAR_SIZE/2)) - 1;
+    constant D_1_X_L: integer := (MAX_X/2) - (5*(CHAR_SIZE/2)) - 1;
     constant D_1_X_R: integer:= D_1_X_L + CHAR_SIZE - 1;
     constant D_1_Y_T: integer := (MAX_Y/2) + (CHAR_SIZE/2) - 1;
     constant D_1_Y_B: integer:= D_1_Y_T + CHAR_SIZE - 1;
