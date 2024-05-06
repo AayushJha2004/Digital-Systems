@@ -394,8 +394,8 @@ begin
 
     -- pixel within square firing ball
     sq_firing_ball_1_on <= '1' when (firing_ball_1_x_l <= pix_x) and (pix_x <= firing_ball_1_x_r) and (firing_ball_1_y_t <= pix_y) and (pix_y<= firing_ball_1_y_b) else '0';
-    sq_firing_ball_2_on <= '1' when (firing_ball_2_x_l <= pix_x) and (pix_x <= firing_ball_2_x_r) and (firing_ball_2_y_t <= pix_y) and (pix_y<= firing_ball_2_y_b) else '0';
-    sq_firing_ball_3_on <= '1' when (firing_ball_3_x_l <= pix_x) and (pix_x <= firing_ball_3_x_r) and (firing_ball_3_y_t <= pix_y) and (pix_y<= firing_ball_3_y_b) else '0';
+    sq_firing_ball_2_on <= '1' when (firing_ball_2_x_l <= pix_x) and (pix_x <= firing_ball_2_x_r) and (firing_ball_2_y_t <= pix_y) and (pix_y<= firing_ball_2_y_b) and (life_cnt_reg = "01") else '0';
+    sq_firing_ball_3_on <= '1' when (firing_ball_3_x_l <= pix_x) and (pix_x <= firing_ball_3_x_r) and (firing_ball_3_y_t <= pix_y) and (pix_y<= firing_ball_3_y_b) and (life_cnt_reg = "01") else '0';
 
     -- map scan coord to ROM addr/col -- use lower order three
     -- bits of pixel and ball positions
