@@ -374,7 +374,7 @@ begin
     spaceship_x_l <= spaceship_x_reg;
     spaceship_x_r <= spaceship_x_reg + SPACESHIP_SIZE_X - 1;
     sq_spaceship_on <= '1' when (spaceship_x_l <= pix_x) and (pix_x <= spaceship_x_r) and (spaceship_y_t <= pix_y) and (pix_y <= spaceship_y_b) else '0';
-    spaceship_rgb <= "101"; -- magenta
+    spaceship_rgb <= "101" when (life_cnt_reg = "01") else "001"; -- magenta if powered up else blue
     
     -- set coordinated of firing ball
     firing_ball_1_x_l <= firing_ball_1_x_reg;
@@ -505,7 +505,7 @@ begin
     rd_ball2_on <= '1' when (sq_ball2_on = '1') and (rom_bit2 = '1') else '0';
     rd_ball3_on <= '1' when (sq_ball3_on = '1') and (rom_bit3 = '1') else '0';
 
-    ball_rgb <= "100"; -- red
+    ball_rgb <= "110"; -- red
 
     -- Update the ball position 60 times per second.
     ball1_x_next <= ball1_x_reg + x1_delta_reg when refr_tick = '1' else ball1_x_reg;
